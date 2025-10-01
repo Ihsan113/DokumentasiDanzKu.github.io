@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H2H Service API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <style>
+        /* Custom styles for sidebar and responsiveness */
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+        /* Smooth scroll for anchor links */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Active section highlight */
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #1f2937;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+    <div class="fixed inset-y-0 left-0 w-64 bg-gray-900 text-white sidebar z-20 md:translate-x-0">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold">H2H API Docs</h1>
+            <p class="text-sm text-gray-400">Version 1.0</p>
+        </div>
+        <nav class="mt-4">
+            <ul class="space-y-2 px-4">
+                <li><a href="#overview" class="block py-2 px-4 rounded hover:bg-gray-800">Overview</a></li>
+                <li><a href="#quick-start" class="block py-2 px-4 rounded hover:bg-gray-800">Quick Start</a></li>
+                <li><a href="#endpoints" class="block py-2 px-4 rounded hover:bg-gray-800">Endpoints</a></li>
+                <li><a href="#webhooks" class="block py-2 px-4 rounded hover:bg-gray-800">Webhooks</a></li>
+                <li><a href="#error-handling" class="block py-2 px-4 rounded hover:bg-gray-800">Error Handling</a></li>
+                <li><a href="#best-practices" class="block py-2 px-4 rounded hover:bg-gray-800">Best Practices</a></li>
+                <li><a href="#changelog" class="block py-2 px-4 rounded hover:bg-gray-800">Changelog</a></li>
+            </ul>
+        </nav>
+    </div>
+    <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-30 p-2 bg-gray-900 text-white rounded">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+    </button>
+    <div class="md:ml-64 p-8 max-w-5xl mx-auto">
+        <header class="mb-12">
+            <h1 class="text-4xl font-extrabold text-gray-900">H2H Service API Documentation</h1>
+            <p class="mt-2 text-lg text-gray-600">A powerful API for managing prepaid services, deposits, and transactions.</p>
+            <p class="mt-1 text-sm text-gray-500">Last updated: September 23, 2025</p>
+        </header>
+        <section id="overview" class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-900">Overview</h2>
+            <p class="mt-4 text-gray-600">
+                The H2H Service API allows you to integrate prepaid services, deposit methods, and transaction management into your application. Powered by Atlantic Pedia, it provides real-time access to pricing, deposit options, and transaction processing with user-specific fee adjustments.
+            </p>
+            <p class="mt-2 text-gray-600">
+                <strong>Base URL:</strong> <code class="bg-gray-200 px-1 rounded">https://your-domain.com/api</code><br>
+                <strong>Authentication:</strong> Requires an API key in the request body.<br>
+                <strong>Support:</strong> Email us at <a href="mailto:support@yourdomain.com" class="text-blue-600 hover:underline">support@yourdomain.com</a>.
+            </p>
+        </section>
+        ---
+        <section id="quick-start" class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-900">Quick Start</h2>
+            <p class="mt-4 text-gray-600">To get started, you need:</p>
+            <ul class="list-disc pl-6 mt-2 text-gray-600">
+                <li>A valid API key from your account dashboard.</li>
+                <li>Tools like Postman, curl, or a custom HTTP client.</li>
+                <li>Node.js environment (optional for testing).</li>
+            </ul>
+            <p class="mt-4 text-gray-600">Include your API key in the request body:</p>
+            <pre><code class="language-json">{
+    "api_key": "your_api_key_here"
+}</code></pre>
+        </section>
+        ---
+        <section id="endpoints" class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-900">Endpoints</h2>
+            <div class="mt-6 space-y-8">
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">1. Get Price List</h3>
+                    <p class="mt-2 text-gray-600">Retrieve a list of services with adjusted prices.</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Method:</strong> POST | <strong>URL:</strong> <code>/layanan/price_list</code></p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Parameters (Body)</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Parameter</th>
+                                        <th class="border p-2 text-left">Type</th>
+                                        <th class="border p-2 text-left">Required</th>
+                                        <th class="border p-2 text-left">Description</th>
+                                        <th class="border p-2 text-left">Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">api_key</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Your API key</td>
+                                        <td class="border p-2">abc123def456</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">type</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Service category</td>
+                                        <td class="border p-2">prabayar</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">code</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">No</td>
+                                        <td class="border p-2">Product code</td>
+                                        <td class="border p-2">PULSA10K</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-lg font-medium mt-4">Request Example</h4>
+                            <pre><code class="language-bash">curl -X POST https://your-domain.com/api/layanan/price_list \
+ -H "Content-Type: application/json" \
+ -d '{
+  "api_key": "your_api_key_here",
+  "type": "prabayar",
+  "code": "PULSA10K"
+ }'</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Success Response (200)</h4>
+                            <pre><code class="language-json">{
+  "status": true,
+  "message": "Data berhasil diambil",
+  "data": [
+    {
+      "id": 123,
+      "code": "PULSA10K",
+      "layanan": "Pulsa Telkomsel 10K",
+      "price": 11000,
+      "original_price": 10000,
+      "keterangan": "Valid for all operators"
+    }
+  ],
+  "code": 200
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">2. Get Deposit Methods</h3>
+                    <p class="mt-2 text-gray-600">Fetch available e-wallet deposit methods.</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Method:</strong> POST | <strong>URL:</strong> <code>/layanan/deposit_metode</code></p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Parameters (Body)</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Parameter</th>
+                                        <th class="border p-2 text-left">Type</th>
+                                        <th class="border p-2 text-left">Required</th>
+                                        <th class="border p-2 text-left">Description</th>
+                                        <th class="border p-2 text-left">Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">api_key</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Your API key</td>
+                                        <td class="border p-2">abc123def456</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-lg font-medium mt-4">Request Example</h4>
+                            <pre><code class="language-bash">curl -X POST https://your-domain.com/api/layanan/deposit_metode \
+ -H "Content-Type: application/json" \
+ -d '{
+  "api_key": "your_api_key_here"
+ }'</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Success Response (200)</h4>
+                            <pre><code class="language-json">{
+  "status": true,
+  "message": "Data deposit metode e-wallet berhasil diambil",
+  "data": [
+    {
+      "metode": "gopay",
+      "fee_persen": "1.5",
+      "fee": "2000",
+      "min_nominal": 10000,
+      "max_nominal": 1000000
+    }
+  ]
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">3. Create Transaction</h3>
+                    <p class="mt-2 text-gray-600">Create a new transaction (e.g., purchase pulsa).</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Method:</strong> POST | <strong>URL:</strong> <code>/layanan/transaksi_create</code></p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Parameters (Body)</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Parameter</th>
+                                        <th class="border p-2 text-left">Type</th>
+                                        <th class="border p-2 text-left">Required</th>
+                                        <th class="border p-2 text-left">Description</th>
+                                        <th class="border p-2 text-left">Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">api_key</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Your API key</td>
+                                        <td class="border p-2">abc123def456</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">code</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Product code</td>
+                                        <td class="border p-2">PULSA10K</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">reff_id</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Unique order ID</td>
+                                        <td class="border p-2">ORDER_001</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">target</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Destination (e.g., phone)</td>
+                                        <td class="border p-2">08123456789</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-lg font-medium mt-4">Request Example</h4>
+                            <pre><code class="language-bash">curl -X POST https://your-domain.com/api/layanan/transaksi_create \
+ -H "Content-Type: application/json" \
+ -d '{
+  "api_key": "your_api_key_here",
+  "code": "PULSA10K",
+  "reff_id": "ORDER_001",
+  "target": "08123456789"
+ }'</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Success Response (200)</h4>
+                            <pre><code class="language-json">{
+  "id": 456,
+  "reff_id": "ORDER_001",
+  "layanan": "Pulsa Telkomsel 10K",
+  "code": "PULSA10K",
+  "target": "08123456789",
+  "price": 11000,
+  "sn": "SN123456",
+  "status": "pending",
+  "created_at": "2025-09-19T10:00:00Z"
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">4. Create Deposit</h3>
+                    <p class="mt-2 text-gray-600">Initiate a deposit with fee calculations.</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Method:</strong> POST | <strong>URL:</strong> <code>/layanan/deposit_create</code></p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Parameters (Body)</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Parameter</th>
+                                        <th class="border p-2 text-left">Type</th>
+                                        <th class="border p-2 text-left">Required</th>
+                                        <th class="border p-2 text-left">Description</th>
+                                        <th class="border p-2 text-left">Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">api_key</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Your API key</td>
+                                        <td class="border p-2">abc123def456</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">reff_id</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Unique reference ID</td>
+                                        <td class="border p-2">DEP_001</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">nominal</td>
+                                        <td class="border p-2">number</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Base amount</td>
+                                        <td class="border p-2">100000</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">type</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">No</td>
+                                        <td class="border p-2">Deposit type</td>
+                                        <td class="border p-2">ewallet</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">metode</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Payment method</td>
+                                        <td class="border p-2">gopay</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-lg font-medium mt-4">Request Example</h4>
+                            <pre><code class="language-bash">curl -X POST https://your-domain.com/api/layanan/deposit_create \
+ -H "Content-Type: application/json" \
+ -d '{
+  "api_key": "your_api_key_here",
+  "reff_id": "DEP_001",
+  "nominal": 100000,
+  "metode": "gopay"
+ }'</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Success Response (200)</h4>
+                            <pre><code class="language-json">{
+  "status": true,
+  "message": "Deposit berhasil dibuat",
+  "data": {
+    "id": 789,
+    "reff_id": "DEP_001",
+    "status": "pending",
+    "metode": "gopay",
+    "harga_asli": 100000,
+    "handling_fee_percent": 1.6,
+    "handling_fee_amount": 1600,
+    "nominal_final": 103100,
+    "get_balance_users": 102000,
+    "margin_users": 2000,
+    "global_fee": 0.5,
+    "global_fee_amount": 500,
+    "user_fee": 2.0,
+    "total_persen_from_api": 1.5,
+    "fee_fix_from_api": 2000
+  }
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">5. Cancel Deposit</h3>
+                    <p class="mt-2 text-gray-600">Cancel a previously created deposit request. Only deposits that are not yet processed can be canceled.</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Method:</strong> POST | <strong>URL:</strong> <code>/layanan/deposit_cancel</code></p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Parameters (Body)</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Parameter</th>
+                                        <th class="border p-2 text-left">Type</th>
+                                        <th class="border p-2 text-left">Required</th>
+                                        <th class="border p-2 text-left">Description</th>
+                                        <th class="border p-2 text-left">Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">api_key</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Your API key</td>
+                                        <td class="border p-2">abc123def456</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">id</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">The ID of the deposit to cancel</td>
+                                        <td class="border p-2">DEP123456789</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-lg font-medium mt-4">Request Example</h4>
+                            <pre><code class="language-bash">curl -X POST https://your-domain.com/api/layanan/deposit_cancel \
+ -H "Content-Type: application/json" \
+ -d '{
+  "api_key": "your_api_key_here",
+  "id": "DEP123456789"
+ }'</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Success Response (200)</h4>
+                            <pre><code class="language-json">{
+    "status": true,
+    "message": "Deposit berhasil dibatalkan",
+    "data": {
+        "id": "DEP123456789",
+        "status": "cancel",
+        "canceled_at": "2025-09-23T12:34:56Z"
+    }
+}</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Error Response Examples</h4>
+                            <p class="mt-2 text-gray-600">If ID is missing (400):</p>
+                            <pre><code class="language-json">{
+    "status": false,
+    "message": "ID Deposit tidak boleh kosong"
+}</code></pre>
+                            <p class="mt-2 text-gray-600">If unable to connect to Atlantic Pedia (503):</p>
+                            <pre><code class="language-json">{
+    "status": false,
+    "message": "Tidak dapat terhubung ke server Atlantic Pedia",
+    "error": "Connection timed out"
+}</code></pre>
+                            <p class="mt-2 text-gray-600">Internal server error (500):</p>
+                            <pre><code class="language-json">{
+    "status": false,
+    "message": "Terjadi kesalahan pada server",
+    "error": "Internal Server Error"
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">6. Get Global Fee</h3>
+                    <p class="mt-2 text-gray-600">Retrieve the current global fee applied to transactions, including user-specific fee.</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Method:</strong> POST | <strong>URL:</strong> <code>/layanan/global_fee</code></p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Parameters (Body)</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Parameter</th>
+                                        <th class="border p-2 text-left">Type</th>
+                                        <th class="border p-2 text-left">Required</th>
+                                        <th class="border p-2 text-left">Description</th>
+                                        <th class="border p-2 text-left">Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">api_key</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Your API key</td>
+                                        <td class="border p-2">abc123def456</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-lg font-medium mt-4">Request Example</h4>
+                            <pre><code class="language-bash">curl -X POST https://your-domain.com/api/layanan/global_fee \
+ -H "Content-Type: application/json" \
+ -d '{
+  "api_key": "your_api_key_here"
+ }'</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Success Response (200)</h4>
+                            <pre><code class="language-json">{
+  "status": true,
+  "message": "Global fee berhasil diambil",
+  "data": {
+    "global_fee": 0.5,
+    "global_fee_percent": "0.5%",
+    "user_fee": 0.3,
+    "user_fee_percent": "0.3%",
+    "keterangan": "Global fee adalah biaya sistem yang ditambahkan pada setiap transaksi",
+    "last_updated": "2025-09-21T12:34:56.789Z"
+  }
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">7. Get User Profile</h3>
+                    <p class="mt-2 text-gray-600">Retrieve the user's own profile data based on the provided API Key.</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Method:</strong> POST | <strong>URL:</strong> <code>/layanan/user_profile</code></p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Parameters (Body)</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Parameter</th>
+                                        <th class="border p-2 text-left">Type</th>
+                                        <th class="border p-2 text-left">Required</th>
+                                        <th class="border p-2 text-left">Description</th>
+                                        <th class="border p-2 text-left">Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">api_key</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Your API key</td>
+                                        <td class="border p-2">abc123def456</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-lg font-medium mt-4">Request Example</h4>
+                            <pre><code class="language-bash">curl -X POST https://your-domain.com/api/layanan/user_profile \
+ -H "Content-Type: application/json" \
+ -d '{
+  "api_key": "your_api_key_here"
+ }'</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Success Response (200)</h4>
+                            <pre><code class="language-json">{
+  "status": true,
+  "message": "Data profil berhasil diambil",
+  "data": {
+    "user_id": "example_user_id",
+    "saldo": "10000",
+    "saldo_numeric": 10000,
+    "masa_aktif": "2025-12-31T23:59:59.999Z",
+    "webhook": "https://example.com/webhook",
+    "login": "user@example.com",
+    "fee": 0.5,
+    "fee_percent": "0.5%",
+    "h2h_api_key": "abc123def456",
+    "status": "active",
+    "days_remaining": 99,
+    "last_updated": "2025-09-23T12:34:56Z"
+  }
+}</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Error Response Examples</h4>
+                            <p class="mt-2 text-gray-600">Internal server error (500):</p>
+                            <pre><code class="language-json">{
+  "status": false,
+  "message": "Terjadi kesalahan saat mengambil data profil",
+  "error": "Error message details"
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">8. Get Transaction Status</h3>
+                    <p class="mt-2 text-gray-600">Retrieve the status and details of a specific transaction using the transaction ID.</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Method:</strong> POST | <strong>URL:</strong> <code>/layanan/transaksi_status</code></p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Parameters (Body)</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Parameter</th>
+                                        <th class="border p-2 text-left">Type</th>
+                                        <th class="border p-2 text-left">Required</th>
+                                        <th class="border p-2 text-left">Description</th>
+                                        <th class="border p-2 text-left">Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">api_key</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Your API key</td>
+                                        <td class="border p-2">abc123def456</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">id_transaksi</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">The ID of the transaction to check</td>
+                                        <td class="border p-2">TRANS123456789</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-lg font-medium mt-4">Request Example</h4>
+                            <pre><code class="language-bash">curl -X POST https://your-domain.com/api/layanan/transaksi_status \
+ -H "Content-Type: application/json" \
+ -d '{
+  "api_key": "your_api_key_here",
+  "id_transaksi": "TRANS123456789"
+ }'</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Success Response (200)</h4>
+                            <pre><code class="language-json">{
+  "id": 456,
+  "reff_id": "ORDER_001",
+  "layanan": "Pulsa Telkomsel 10K",
+  "code": "PULSA10K",
+  "target": "08123456789",
+  "price": 11000,
+  "sn": "SN123456",
+  "status": "success",
+  "created_at": "2025-09-19T10:00:00Z"
+}</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Error Response Examples</h4>
+                            <p class="mt-2 text-gray-600">If parameters are missing (400):</p>
+                            <pre><code class="language-json">{
+  "status": false,
+  "message": "api_key dan id_transaksi tidak boleh kosong"
+}</code></pre>
+                            <p class="mt-2 text-gray-600">If transaction not found (404):</p>
+                            <pre><code class="language-json">{
+  "status": false,
+  "message": "Data transaksi tidak ditemukan untuk ID dan API Key yang diberikan."
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">9. Get Deposit Status</h3>
+                    <p class="mt-2 text-gray-600">Retrieve the status and simplified details of a specific deposit using the deposit ID.</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Method:</strong> POST | <strong>URL:</strong> <code>/layanan/deposit_status</code></p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Parameters (Body)</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Parameter</th>
+                                        <th class="border p-2 text-left">Type</th>
+                                        <th class="border p-2 text-left">Required</th>
+                                        <th class="border p-2 text-left">Description</th>
+                                        <th class="border p-2 text-left">Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">api_key</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">Your API key</td>
+                                        <td class="border p-2">abc123def456</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">id_deposit</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Yes</td>
+                                        <td class="border p-2">The ID of the deposit to check</td>
+                                        <td class="border p-2">DEP123456789</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h4 class="text-lg font-medium mt-4">Request Example</h4>
+                            <pre><code class="language-bash">curl -X POST https://your-domain.com/api/layanan/deposit_status \
+ -H "Content-Type: application/json" \
+ -d '{
+  "api_key": "your_api_key_here",
+  "id_deposit": "DEP123456789"
+ }'</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Success Response (200)</h4>
+                            <pre><code class="language-json">{
+  "status": true,
+  "message": "Data deposit berhasil ditemukan",
+  "data": {
+    "id": "DEP123456789",
+    "reff_id": "DEP_001",
+    "nominal_deposit": 100000,
+    "url_pembayaran": "https://example.com/pay/DEP123456789",
+    "status": "success",
+    "created_at": "2025-09-23T10:00:00Z",
+    "expired_at": "2025-09-23T11:00:00Z",
+    "harga_asli": 100000,
+    "nominal_final": 103100,
+    "total_fee": 3100,
+    "margin_bersih": 2000,
+    "qr_image": "https://example.com/qr/DEP123456789.png"
+  }
+}</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Error Response Examples</h4>
+                            <p class="mt-2 text-gray-600">If parameters are missing (400):</p>
+                            <pre><code class="language-json">{
+  "status": false,
+  "message": "api_key dan id_deposit tidak boleh kosong"
+}</code></pre>
+                            <p class="mt-2 text-gray-600">If deposit not found (404):</p>
+                            <pre><code class="language-json">{
+  "status": false,
+  "message": "Data deposit tidak ditemukan untuk ID dan API Key yang diberikan."
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+        ---
+        <section id="webhooks" class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-900">Webhooks</h2>
+            <p class="mt-4 text-gray-600">
+                Layanan webhook kami memungkinkan Anda menerima notifikasi secara real-time untuk status **transaksi** dan **deposit** Anda.
+            </p>
+            <p class="mt-2 text-gray-600">
+                <strong>URL yang harus Anda sediakan:</strong> <code class="bg-gray-200 px-1 rounded">https://your-domain.com/webhook</code>
+            </p>
+            <p class="mt-2 text-gray-600">
+                <strong>Metode:</strong> <code class="bg-gray-200 px-1 rounded">POST</code><br>
+                <strong>Content-Type:</strong> <code class="bg-gray-200 px-1 rounded">application/json</code>
+            </p>
+            <div class="mt-6 space-y-8">
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">1. Notifikasi Transaksi</h3>
+                    <p class="mt-2 text-gray-600">Anda akan menerima notifikasi ini ketika status transaksi berubah.</p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Contoh Payload (berhasil)</h4>
+                            <pre><code class="language-json">{
+  "event": "transaksi",
+  "data": {
+    "reff_id": "TRANS-20250919-XYZ",
+    "layanan": "Pulsa Telkomsel 10K",
+    "target": "081234567890",
+    "status": "success",
+    "sn": "A1B2C3D4E5F6G7H8I9J0"
+  }
+}</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Contoh Payload (gagal)</h4>
+                            <pre><code class="language-json">{
+  "event": "transaksi",
+  "data": {
+    "reff_id": "TRANS-20250919-XYZ",
+    "layanan": "Pulsa Telkomsel 10K",
+    "target": "081234567890",
+    "status": "failed",
+    "sn": "N/A"
+  }
+}</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Penjelasan Payload</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Kunci</th>
+                                        <th class="border p-2 text-left">Tipe Data</th>
+                                        <th class="border p-2 text-left">Deskripsi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">event</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Selalu `transaksi` untuk notifikasi ini.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data</td>
+                                        <td class="border p-2">object</td>
+                                        <td class="border p-2">Objek yang berisi detail transaksi.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data.reff_id</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">ID referensi unik untuk transaksi.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data.layanan</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Nama produk atau layanan yang dibeli.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data.target</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Nomor tujuan atau akun yang diisi.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data.status</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Status transaksi. Nilai yang mungkin: `success` (berhasil) atau `failed` (gagal).</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data.sn</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Serial number atau kode unik transaksi. `N/A` jika gagal.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                </div>
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-900">2. Notifikasi Deposit</h3>
+                    <p class="mt-2 text-gray-600">Anda akan menerima notifikasi ini ketika status deposit berubah.</p>
+                    <details class="mt-4">
+                        <summary class="cursor-pointer text-blue-600 font-medium">Show Details</summary>
+                        <div class="mt-4">
+                            <h4 class="text-lg font-medium">Contoh Payload (berhasil)</h4>
+                            <pre><code class="language-json">{
+  "event": "deposit",
+  "data": {
+    "reff_id": "DEPO-20250919-ABC",
+    "metode": "QRIS",
+    "status": "success"
+  }
+}</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Contoh Payload (dibatalkan)</h4>
+                            <pre><code class="language-json">{
+  "event": "deposit",
+  "data": {
+    "reff_id": "DEPO-20250919-ABC",
+    "metode": "QRIS",
+    "status": "canceled"
+  }
+}</code></pre>
+                            <h4 class="text-lg font-medium mt-4">Penjelasan Payload</h4>
+                            <table class="w-full border-collapse mt-2">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-left">Kunci</th>
+                                        <th class="border p-2 text-left">Tipe Data</th>
+                                        <th class="border p-2 text-left">Deskripsi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-2">event</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Selalu `deposit` untuk notifikasi ini.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data</td>
+                                        <td class="border p-2">object</td>
+                                        <td class="border p-2">Objek yang berisi detail deposit.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data.reff_id</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">ID referensi unik untuk deposit.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data.metode</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Metode pembayaran yang digunakan, contoh: `QRIS`, `VA BNI`.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2">data.status</td>
+                                        <td class="border p-2">string</td>
+                                        <td class="border p-2">Status deposit. Nilai yang mungkin: `success` atau `processing` (keduanya menandakan deposit berhasil masuk), atau `canceled` (dibatalkan).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+        ---
+        <section id="error-handling" class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-900">Error Handling</h2>
+            <p class="mt-4 text-gray-600">Errors follow this structure:</p>
+            <pre><code class="language-json">{
+  "status": false,
+  "message": "Descriptive error message",
+  "error": { "details": "Optional error object" }
+}</code></pre>
+            <p class="mt-4 text-gray-600">Common codes:</p>
+            <ul class="list-disc pl-6 mt-2 text-gray-600">
+                <li>400: Bad Request (e.g., missing parameters)</li>
+                <li>401: Unauthorized (invalid API key)</li>
+                <li>403: Forbidden (expired API key)</li>
+                <li>404: Not Found (e.g., invalid product code)</li>
+                <li>500: Server Error</li>
+                <li>503: Service Unavailable (external API down)</li>
+            </ul>
+        </section>
+        ---
+        <section id="best-practices" class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-900">Best Practices</h2>
+            <ul class="list-disc pl-6 mt-4 text-gray-600">
+                <li><strong>Validate Inputs:</strong> Check parameters client-side.</li>
+                <li><strong>Handle Timeouts:</strong> Use 10-15s timeouts.</li>
+                <li><strong>Monitor Balance:</strong> Poll dashboard for updates.</li>
+                <li><strong>Testing:</strong> Use sandbox mode (contact support).</li>
+                <li><strong>Security:</strong> Never expose API keys in client code.</li>
+            </ul>
+        </section>
+        ---
+        <section id="changelog" class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-900">Changelog</h2>
+            <p class="mt-4 text-gray-600">v1.0 (Sep 19, 2025): Initial release with all endpoints.</p>
+            <p class="mt-4 text-gray-600">v1.1 (Sep 21, 2025): Added Get Global Fee endpoint.</p>
+            <p class="mt-4 text-gray-600">v1.2 (Sep 23, 2025): Added Cancel Deposit endpoint.</p>
+            <p class="mt-4 text-gray-600">v1.3 (Sep 23, 2025): Added Get Transaction Status and Get Deposit Status endpoints.</p>
+        </section>
+        ---
+        <footer class="mt-12 text-center text-gray-600">
+            <p>Need help? Contact <a href="mailto:support@yourdomain.com" class="text-blue-600 hover:underline">support@yourdomain.com</a>.</p>
+            <p class="mt-2">© 2025 H2H Service. All rights reserved.</p>
+        </footer>
+    </div>
+    <script>
+        // Toggle sidebar on mobile
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+        // Highlight active section in sidebar
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar a');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 60) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
